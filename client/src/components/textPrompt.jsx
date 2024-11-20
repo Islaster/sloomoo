@@ -27,7 +27,10 @@ const ResponsiveQuestionForm = () => {
       prompt: questions[3].answer,
     }
     // Handle form submission logic
-    axios.post('http://localhost:3001/maddie', formData);
+    axios.post('http://localhost:3001/sendPrompt',{
+        nodeId: 28,
+        newPrompt: formData.prompt,
+    })
   };
 
   return (
