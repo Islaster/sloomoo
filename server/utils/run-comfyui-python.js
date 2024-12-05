@@ -1,7 +1,7 @@
 const { spawn } = require('child_process');
 
 // Path to your Python script
-const pythonScript = '../comfyui-api.py';
+const pythonScript = 'comfyui-api.py';
 
 // Arguments to pass to the Python script (if any)
 const args = ['arg1', 'arg2'];

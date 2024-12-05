@@ -1,9 +1,13 @@
+const { spawn } = require('child_process');
 const Prompt = require("../models/Prompt");
 const fs = require("fs");
 const path = require("path");
 
+// Path to the Python script
+const pythonScript = 'comfyui-api.py';
+
 // Path to the workflow JSON file
-const workflowFilePath = path.join(__dirname,"..", "Image2Video.json");
+const workflowFilePath = path.join(__dirname, "..", "Image2Video.json");
 
 module.exports = {
   getPrompt,
@@ -77,11 +81,29 @@ async function sendPrompt(req, res) {
                 .json({ success: false, message: "Failed to save workflow" });
             }
 
+            // Run the Python script at the end of the stack
+            const pythonProcess = spawn('python3', [pythonScript]);
+
+            // Capture the output from the Python script
+            pythonProcess.stdout.on('data', (data) => {
+              console.log(`Python Output: ${data}`);
+            });
+
+            // Capture errors from the Python script
+            pythonProcess.stderr.on('data', (data) => {
+              console.error(`Python Error: ${data}`);
+            });
+
+            // Notify when the script is done
+            pythonProcess.on('close', (code) => {
+              console.log(`Python script exited with code ${code}`);
+            });
+
             res
               .status(200)
               .json({
                 success: true,
-                message: "Prompt updated successfully",
+                message: "Prompt updated successfully and Python script executed",
                 updatedWorkflow: workflowData,
               });
           }
