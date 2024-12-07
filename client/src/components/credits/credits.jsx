@@ -88,7 +88,7 @@ export default function Credits({setChangeScreen}){
                 <footer className="mt-2">
                         <a 
                             className="credit d-flex flex-column align-items-center justify-content-center" 
-                            onClick={() => setChangeScreen('1')}
+                            onClick={() => setChangeScreen(1)}
                         > 
                             home
                         </a>
