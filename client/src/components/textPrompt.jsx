@@ -2,7 +2,7 @@ import OpeningScreen from "./openingScreen/openingScreen"
 import SloomooVideo from "./sloomooVideo/sloomooVideo"
 import Credits from "./credits/credits"
 import SloomooForm from "./form"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Output from "./output"
 
 export default function TextPrompt(){
@@ -14,6 +14,7 @@ export default function TextPrompt(){
   const renderForm = changeScreen === 3 ? <SloomooForm /> : "";
   const renderOutput = changeScreen === 4? <Output />: "";
   console.log(changeScreen);
+
   return(
     <>
     {renderOpeningScreen}
