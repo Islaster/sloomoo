@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./sloomooVideo.css"
 import Card from 'react-bootstrap/Card';
 
@@ -14,9 +14,13 @@ Sweet Sloomoo sits, all alone.`}, {videoSrc:'/videos/Sloomoovie_part3.mp4', poem
     And on a note, words dancing in light
     "Make a wish and shake with all your might!"`},  {videoSrc:'/videos/Sloomoovie_part4.mp4', poem:`What's the wish that made Sloomoo's heart soar?
         That's what your imagination's for!`}];
-    if(int === videoInfo.length){
-        setButtonChange(false);
-    }
+        useEffect(() => {
+            if (int === videoInfo.length - 1) {
+                setButtonChange(false);
+            } else {
+                setButtonChange(true);
+            }
+        }, [int]);
     const buttonRender = buttonChange ? 
     <button onClick={()=>setInt(int+1)}>NEXT</button>:
     <button  onClick={()=>setChangeScreen(3)}>Next</button>
