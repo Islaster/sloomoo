@@ -1,0 +1,51 @@
+.header-container {
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: top center;
+    text-align: center;
+    margin-bottom: .5rem;
+}
+
+.sloomoo-holiday-wish-header{
+    font-size: 1.5rem;
+    line-height: 100%;
+    font-family:'Leckerli One';
+    color: #fff6f6;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    }
+
+    .form-card {
+        background-image: url('snowglobe.png');
+        background-size:  auto 100%;
+        background-position: 50% 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 95vw;
+        height: 70vh;
+        padding: 2rem;
+        border-radius: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .embed-iframe {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .embed-iframe:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px 0px rgba(0, 0, 0, 0.15);
+    }
+    
+
+footer{
+    position:absolute;
+    left:0;
+    bottom:0;
+    right:0;
+    padding-bottom: 1rem;
+}
+
