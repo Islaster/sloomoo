@@ -1,6 +1,10 @@
 import { useEffect } from "react";
+import io from 'socket.io-client';
+
+const socket = io('https://7ac4-2603-8000-a9f0-6cb0-508a-27a4-7718-7141.ngrok-free.app')
 
 export default function SloomooForm(){
+  //pickaxe script tag
   useEffect(() => {
     // Adding the script dynamically
     const script = document.createElement('script');
@@ -30,6 +34,9 @@ export default function SloomooForm(){
       document.head.removeChild(script);
     }
   }, []);
+  function handleClick(){ 
+    
+  }
   return(
     <div id="pickaxe-inline-Sloomos_Wish_WLCA4">
       {/* Add any fallback or loading content if needed */}
