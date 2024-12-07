@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 
-export default function SloomooForm(){
-  //pickaxe script tag
+export default function SloomooForm() {
   useEffect(() => {
-    // Adding the updated script dynamically
+    // Adding the Pickaxe script dynamically
     const script = document.createElement("script");
     script.innerHTML = `
       window.PICKAXE = window.PICKAXE || {
@@ -33,12 +32,37 @@ export default function SloomooForm(){
     };
   }, []);
 
-  function handleClick(){ 
-    
-  }
-  return(
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Locate the target element dynamically
+      const targetDiv = document.querySelector('.pxe-flex.pxe-flex-col.pxe-gap-y-2');
+
+      if (targetDiv) {
+        // Check if the hidden input is already added
+        if (!document.querySelector('#formId')) {
+          // Create a hidden input element
+          const hiddenInput = document.createElement("input");
+          hiddenInput.type = "hidden";
+          hiddenInput.name = "formId";
+          hiddenInput.id = "formId";
+          hiddenInput.value = crypto.randomUUID(); // Generate a unique ID
+
+          // Insert the hidden input as a sibling
+          targetDiv.parentNode.insertBefore(hiddenInput, targetDiv.nextSibling);
+
+          console.log("Hidden input added as sibling:", hiddenInput.value);
+        }
+
+        clearInterval(interval); // Stop checking once the input is added
+      }
+    }, 500); // Check every 500ms
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, []);
+
+  return (
     <div id="pickaxe-inline-Sloomos_Wish_WLCA4">
       {/* Add any fallback or loading content if needed */}
     </div>
-  )
+  );
 }
