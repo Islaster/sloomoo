@@ -14,6 +14,7 @@ body {
   width: 100%;
 }
 
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -25,10 +26,9 @@ button {
   border: none;
   border-radius: 8px;
   padding: 12px 40px;
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 500;
   text-transform: uppercase;
-  cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
 }
@@ -42,4 +42,34 @@ button:hover {
 button:active {
   transform: translateY(0px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.credit {
+  font-size: 24px;
+  color: #000;
+  font-family: 'Quicksand';
+}
+
+.credit-container {
+  align-items: center;
+}
+
+a{
+  color:#0000;
+}
+
+a:hover{
+  color:#0000;
+}
+
+a:visited{
+  color:#0000;
+}
+
+footer{
+  position:absolute;
+  left:0;
+  bottom:0;
+  right:0;
+  padding-bottom: 1rem;
 }

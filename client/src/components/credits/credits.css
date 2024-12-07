@@ -1,0 +1,30 @@
+a{
+  color:#0000;
+}
+
+a:hover{
+  color:#0000;
+}
+
+a:visited{
+  color:#0000;
+}
+
+.sloomoovies{
+  font-size: 2rem;
+  line-height: 100%;
+  color: #000;
+  font-family: 'Quicksand';
+  padding: .8rem;
+  text-align: center;
+  }
+
+.credit-line{
+  font-size: 1rem;
+  line-height: 100%;
+  color: #000;
+  font-family: 'Quicksand';
+  margin: .3rem;
+  padding: .5rem;
+  text-align: center;
+  }
