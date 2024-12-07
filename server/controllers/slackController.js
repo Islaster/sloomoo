@@ -1,22 +1,29 @@
-module.exports = {
-    handleEvent,
-  };
-  
+const { getMyDMChannel, getLatestMessage } = require('../models/Slack');
 
-function handleEvent (req, res){
-    const { type, challenge, event } = req.body;
-  
-    if (type === 'url_verification') {
-      return res.json({ challenge });
+// Fetch the latest message from the user's DM channel
+const fetchLatestMessage = async (req, res) => {
+  try {
+    const dmChannel = await getMyDMChannel();
+
+    if (!dmChannel) {
+      return res.status(404).json({ error: 'No DM channel found' });
     }
-  
-    if (type === 'event_callback' && event.type === 'message') {
-      const io = req.app.get('io'); // Access the WebSocket server
-      io.emit('newMessage', event); // Notify clients about the new message
-      console.log(`New message broadcasted: ${event.text}`);
-      return res.sendStatus(200);
+
+    const latestMessage = await getLatestMessage(dmChannel.id);
+
+    if (latestMessage) {
+      return res.json({
+        channel: dmChannel.id,
+        message: latestMessage.text,
+        timestamp: latestMessage.ts,
+      });
+    } else {
+      return res.json({ message: 'No messages found in the channel' });
     }
-  
-    res.sendStatus(400);
-  };
-  
+  } catch (error) {
+    console.error('Error in fetchLatestMessage:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+module.exports = { fetchLatestMessage };

@@ -1,9 +1,8 @@
 const express = require('express');
-const slackController = require('../controllers/slackController');
-
+const { fetchLatestMessage } = require('../controllers/slackController');
 const router = express.Router();
 
-// Route for Slack Events API
-router.post('/events', slackController.handleEvent);
+// Route to fetch the latest message from the user's DM channel
+router.get('/', fetchLatestMessage);
 
 module.exports = router;
