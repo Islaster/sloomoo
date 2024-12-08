@@ -4,13 +4,12 @@ export default function OpeningScreen({setChangeScreen}){
     return(
     <>
     <section className="vh-100 vw-100">
-                <div style={{ width: '100vw', height: '300px' }}>
+                <div style={{ width: '100vw', height: '30vh' }}>
                     <img src="/Drips_Master-03.png" alt="bigdrip"
                                 style={{
-                                    width: '100%',
+                                    width: '120%',
                                     height: '100%',
                                     position: 'relative',
-                                    objectFit: 'cover'
                                 }} />
                 </div>
             <section className="align-items-center justify-content-center">

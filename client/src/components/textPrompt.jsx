@@ -12,7 +12,7 @@ export default function TextPrompt(){
   const renderCredits = changeScreen === 'c' ? <Credits setChangeScreen={setChangeScreen} /> : "";
   const renderSloomooVideo = changeScreen === 2 ? <SloomooVideo setChangeScreen={setChangeScreen}/>: "";
   const renderForm = changeScreen === 3 ? <SloomooForm setChangeScreen={setChangeScreen}/> : "";
-  const renderOutput = changeScreen === 4? <Output />: "";
+  const renderOutput = changeScreen === 4? <Output setChangeScreen={setChangeScreen}/>: "";
   console.log(changeScreen);
 
   return(

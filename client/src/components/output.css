@@ -1,0 +1,82 @@
+.header-container {
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: top center;
+    text-align: center;
+    margin-bottom: .5rem;
+}
+
+.sloomoo-holiday-wish-header{
+    font-size: 1.5rem;
+    line-height: 100%;
+    font-family:'Leckerli One';
+    color: #fff6f6;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    }
+
+.output-card {
+        background-color: #FFF5E6;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 95vw;
+        height: 70vh;
+        min-height: 62vh;
+        max-width: 800px;
+        padding: 1rem;
+        border-radius: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+.oc-body{
+        width: 92vw;
+        height: 25vh;
+        padding:1px;
+        margin: 1px;
+        margin-bottom: .5rem;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow-y: auto;
+    }
+
+    .image-wrapper {
+        width: calc(100vw - 3.2rem);
+        height: calc(100vw - 4rem);
+        max-height: 33vh;
+        max-width: 600px;
+        position: relative;
+        overflow: hidden;
+        background-color: black;
+        border-radius: 0.5rem;
+        margin: 1rem;
+        animation: glow 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+        0% {
+            box-shadow: 0 0 10px #16A9E4,
+                       0 0 20px #16A9E4;
+        }
+        50% {
+            box-shadow: 0 0 15px #3154FF,
+                       0 0 25px #3154FF,
+                       0 0 35px #3154FF;
+        }
+        100% {
+            box-shadow: 0 0 20px #C9139B,
+                       0 0 30px #C9139B,
+                       0 0 40px #C9139B;
+        }
+    }
+
+footer{
+    position:absolute;
+    left:0;
+    bottom:0;
+    right:0;
+    padding-bottom: 1rem;
+}
+

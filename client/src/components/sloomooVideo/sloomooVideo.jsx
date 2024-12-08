@@ -54,7 +54,7 @@ Sweet Sloomoo sits, all alone.`}, {videoSrc:'/videos/Sloomoovie_part3.mp4', poem
                                 height: '100%',
                                 objectFit: 'cover'
                             }}
-                            controls 
+                            controls={false}
                             autoPlay 
                             muted
                             loop
