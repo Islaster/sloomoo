@@ -1,12 +1,26 @@
 {
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.705.0",
     "@slack/web-api": "^7.8.0",
+    "aws-sdk": "^2.1692.0",
+    "axios": "^1.7.9",
+    "cheerio": "^1.0.0",
+    "connect-redis": "^8.0.1",
+    "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "mongodb": "^6.11.0",
     "mongoose": "^8.8.1",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.16",
     "nodemon": "^3.1.7",
-    "socket.io": "^4.8.1"
+    "openai": "^4.76.0",
+    "pdf-parse": "^1.1.1",
+    "redis": "^4.7.0",
+    "socket.io": "^4.8.1",
+    "tiktoken": "^1.0.17",
+    "uuid": "^11.0.3"
   }
 }
