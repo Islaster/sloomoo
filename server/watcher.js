@@ -38,6 +38,10 @@ async function downloadFile(key) {
   const localPath = path.join(DOWNLOAD_DIR, path.basename(key));
 
   try {
+    if (!fs.existsSync(DOWNLOAD_DIR)) {
+      fs.mkdirSync(DOWNLOAD_DIR, { recursive: true });
+      console.log(`Created missing directory: ${DOWNLOAD_DIR}`)
+    }
     const params = {
       Bucket: BUCKET_NAME,
       Key: key,
