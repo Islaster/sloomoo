@@ -1,8 +1,12 @@
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
+const expores = require('express');
 const { S3Client, ListObjectsV2Command, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { Readable } = require('stream');
 require('dotenv').config();
+
+con
 
 // Initialize S3 client
 const s3Client = new S3Client({
@@ -14,7 +18,9 @@ const s3Client = new S3Client({
 });
 
 const { Server } = require('socket.io');
-const io = new Server(3002, {
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server , {
   cors: {
     origin: 'https://sloomoo.vercel.app', // Frontend URL
     methods: ['GET', 'POST'],
@@ -115,4 +121,8 @@ pollForNewFiles();
 
 io.on('connection', (socket) => {
     console.log(`Frontend connected: ${socket.id}`);
+  });
+
+  server.listen(3002, () => {
+    console.log('Watcher running on port 3002');
   });
