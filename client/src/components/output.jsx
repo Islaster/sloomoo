@@ -10,7 +10,7 @@ export default function Output({ setChangeScreen }) {
   const [outputImg, setOutputImg] = useState('test.png'); // Default image placeholder
   const [isLoading, setIsLoading] = useState(true);
 
-  const socket = io('https://sloomoo.onrender.com:3002');
+  const socket = io('https://sloomoo.onrender.com');
 
   useEffect(() => {
 

@@ -21,8 +21,8 @@ export default function SloomooForm({ setChangeScreen }) {
       'prompt': prompt,
       "id": uniqueId
     }
-
-    axios.post('https://sloomoo.onrender.com/', data).then((res)=>{
+    console.log(data);
+    axios.post('https://sloomoo.onrender.com', data).then((res)=>{
       if(res){ 
         axios.get('https://sloomoo.onrender.com/comfyui')
       }

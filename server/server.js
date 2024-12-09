@@ -12,13 +12,13 @@ const {spawn} = require('child_process');
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'https://sloomoo.vercel.app/', // Allow requests from your frontend
+    origin: 'https://sloomoo.vercel.app', // Allow requests from your frontend
     methods: ['GET', 'POST'],
   },
 });
 
 app.use(cors({
-  origin: 'https://sloomoo.vercel.app/', // Allow requests from your frontend
+  origin: 'https://sloomoo.vercel.app', // Allow requests from your frontend
 }))
 
 const DOWNLOAD_DIR = path.resolve(__dirname, 'images');
