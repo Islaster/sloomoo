@@ -90,7 +90,7 @@ async function pollForNewFiles(io) {
         latestVersions[id] = version;
         console.log(`New version detected: ${file.Key}`);
         await downloadFile(file.Key);
-        io.emit('newImage', { id, message:"file has been made" });
+        io.emit('newImage', { id, message: "file has been made" });
       } else {
         console.log(`Skipping ${file.Key}: Not a new version.`);
       }
@@ -99,9 +99,10 @@ async function pollForNewFiles(io) {
     console.error('Error polling for new files:', error);
   }
 
-  // Poll every 5 seconds
-  setTimeout(pollForNewFiles, 5000);
+  // Pass `io` to the recursive call
+  setTimeout(() => pollForNewFiles(io), 5000);
 }
+
 
 module.exports = {
   pollForNewFiles,
