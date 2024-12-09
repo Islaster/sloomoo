@@ -10,12 +10,12 @@ export default function Output({ setChangeScreen }) {
   const [outputPoem, setOutputPoem] = useState(''); // Store the poem content
   const [outputImg, setOutputImg] = useState('test.png'); // Default image placeholder
   const [isLoading, setIsLoading] = useState(true);
+  const {prompt} = useContext(AppContext)
   
   const socket = io('https://sloomoo.onrender.com');
   
   useEffect(() => {
-    const {propmt} = useContext(AppContext)
-
+    
     socket.on('newImage', async ({ id }) => {
       console.log('New image detected for ID:', id)
       try{
