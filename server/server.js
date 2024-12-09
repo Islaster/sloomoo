@@ -8,6 +8,8 @@ const { Configuration, OpenAIApi } = require('openai');
 const app = express();
 const cors = require("cors");
 const {spawn} = require('child_process');
+const { pollForNewFiles, downloadFile } = require('./watcher');
+
 
 const server = http.createServer(app);
 const io = new Server(server, {
