@@ -8,7 +8,6 @@ const { Configuration, OpenAIApi } = require('openai');
 const app = express();
 const cors = require("cors");
 const {spawn} = require('child_process');
-const mongoose = require('mongoose')
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -25,12 +24,6 @@ app.use(cors({
 
 const DOWNLOAD_DIR = path.resolve(__dirname, 'images');
 const BUCKET_NAME = 'aws-output-images';
-
-const mongoUri = process.env.MONGODB_URI;
-if (!mongoUri) {
-  console.error('MongoDB connection string is missing from .env file.');
-  process.exit(1);
-}
 
 io.on('connection', (socket) => {
   console.log(`Client connected: ${socket.id}`);
