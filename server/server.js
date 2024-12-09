@@ -2,57 +2,56 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const http = require('http');
-const { S3Client, ListObjectsV2Command, GetObjectCommand } = require('@aws-sdk/client-s3');
-const { Readable } = require('stream');
-const { Server } = require('socket.io');
-const cors = require('cors');
-const { spawn } = require('child_process');
+const { Server } = require('socket.io');  
 require('dotenv').config();
-
+const { Configuration, OpenAIApi } = require('openai');
 const app = express();
+const cors = require("cors");
+const {spawn} = require('child_process');
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'https://sloomoo.vercel.app', // Frontend URL
+    origin: 'https://sloomoo.vercel.app', // Allow requests from your frontend
     methods: ['GET', 'POST'],
   },
 });
 
-app.use(cors({
-  origin: 'https://sloomoo.vercel.app',
-}));
-app.use(express.json());
 
-// Global configurations
+app.use(cors({
+  origin: 'https://sloomoo.vercel.app', // Allow requests from your frontend
+}))
+
 const DOWNLOAD_DIR = path.resolve(__dirname, 'images');
 const BUCKET_NAME = 'aws-output-images';
-const latestVersions = {}; // In-memory tracker for file versions
 
-// Initialize S3 client
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
+// Initialize shared `io` for all functions
+pollForNewFiles(io);
 
-// Socket.io connection
 io.on('connection', (socket) => {
   console.log(`Client connected: ${socket.id}`);
+  
   socket.on('disconnect', () => {
     console.log(`Client disconnected: ${socket.id}`);
   });
 });
 
-// Serve images
+app.use(express.json()); // Middleware to parse JSON request bodies
+
+// In-memory tracker for the latest served file for each ID
+const latestServedImages = {};
+
+// Serve the latest image based on the given ID
 app.get('/comfyui/output/:id', async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params; // Extract the ID from the route parameter
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'];
-  console.log("Request for ID:", id);
+  console.log("id: ", id);
 
   try {
+    // Read all files in the directory
     const files = fs.readdirSync(DOWNLOAD_DIR);
+
+    // Filter files by the given ID and valid image extensions
     const matchingFiles = files.filter((file) => {
       const { name, ext } = path.parse(file);
       return name.startsWith(id) && imageExtensions.includes(ext.toLowerCase());
@@ -62,9 +61,19 @@ app.get('/comfyui/output/:id', async (req, res) => {
       return res.status(404).json({ message: 'No matching images found.' });
     }
 
-    const latestFile = matchingFiles.sort().reverse()[0];
+    // Sort files to find the latest one (assuming naming convention includes versions or timestamps)
+    const latestFile = matchingFiles.sort().reverse()[0]; // Sort descending and take the first file
     const imagePath = path.join(DOWNLOAD_DIR, latestFile);
 
+    // Check if this file is newer than the last served one
+    if (latestServedImages[id] === latestFile) {
+      return res.status(304).json({ message: 'No new images available.' }); // No new content
+    }
+
+    // Update the latest served record
+    latestServedImages[id] = latestFile;
+
+    // Send the file to the client
     res.sendFile(imagePath, (err) => {
       if (err) {
         console.error(`Error sending file: ${err}`);
@@ -77,84 +86,65 @@ app.get('/comfyui/output/:id', async (req, res) => {
   }
 });
 
-// Poll and download files from S3
-async function pollForNewFiles() {
-  try {
-    console.log(`Polling S3 for new files at ${new Date().toISOString()}`);
-    const command = new ListObjectsV2Command({ Bucket: BUCKET_NAME });
-    const data = await s3Client.send(command);
+app.post('/', (req, res) => {
+  const { prompt, uniqueId } = req.body;
+  if (prompt) {
+    console.log('Received response:', req.body);
 
-    if (!data.Contents || data.Contents.length === 0) {
-      console.log('No files found in the bucket.');
-      return;
-    }
+    const filePath = './workflow_api.json';
 
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'];
-    const validFiles = data.Contents.filter((object) => {
-      const extension = path.extname(object.Key).toLowerCase();
-      return imageExtensions.includes(extension);
-    });
-
-    for (const file of validFiles) {
-      const parsed = parseFileName(path.basename(file.Key));
-      if (!parsed) {
-        console.log(`Skipping invalid file name: ${file.Key}`);
-        continue;
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        console.error('Error reading JSON file:', err);
+        return res.status(500).json({ message: 'Failed to process request' });
       }
 
-      const { id, version } = parsed;
-      if (latestVersions[id] && version <= latestVersions[id]) {
-        console.log(`Skipping ${file.Key}: Already processed or older version.`);
-        continue;
+      let jsonData;
+      try {
+        jsonData = JSON.parse(data);
+      } catch (parseErr) {
+        console.error('Error parsing JSON:', parseErr);
+        return res.status(500).json({ message: 'Failed to process request' });
       }
 
-      latestVersions[id] = version;
-      console.log(`New version detected: ${file.Key}`);
-      await downloadFile(file.Key);
-      io.emit('newImage', { id, message: "File downloaded successfully." });
-    }
-  } catch (error) {
-    console.error('Error polling S3:', error.message);
-  }
+      console.log('Generated unique ID:', req.body.id);
 
-  setTimeout(pollForNewFiles, 30000); // Poll every 30 seconds
-}
+      if (jsonData['6'] && jsonData['6'].inputs) {
+        jsonData['6'].inputs.text = prompt;
+      }
+     if (jsonData['9'] && jsonData['9'].inputs) {
+        jsonData['9'].inputs.filename_prefix = req.body.id
+      }
 
-pollForNewFiles();
-
-// Download a file from S3
-async function downloadFile(key) {
-  const localPath = path.join(DOWNLOAD_DIR, path.basename(key));
-  try {
-    if (!fs.existsSync(DOWNLOAD_DIR)) {
-      fs.mkdirSync(DOWNLOAD_DIR, { recursive: true });
-      console.log(`Created directory: ${DOWNLOAD_DIR}`);
-    }
-    const command = new GetObjectCommand({ Bucket: BUCKET_NAME, Key: key });
-    const { Body } = await s3Client.send(command);
-
-    const fileStream = fs.createWriteStream(localPath);
-    if (Body instanceof Readable) {
-      Body.pipe(fileStream);
-      return new Promise((resolve, reject) => {
-        fileStream.on('finish', () => {
-          console.log(`Downloaded: ${localPath}`);
-          resolve();
-        });
-        fileStream.on('error', (error) => {
-          console.error(`Error writing file ${key}:`, error.message);
-          reject(error);
-        });
+      // Write changes to the file
+      fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (writeErr) => {
+        if (writeErr) {
+          console.error('Error writing to JSON file:', writeErr);
+        } else {
+          console.log('JSON file updated successfully');
+        }
       });
-    }
-  } catch (error) {
-    console.error(`Error downloading file ${key}:`, error.message);
-  }
-}
 
-// Run a Python script
-app.get('/comfyui', (req, res) => {
-  const pythonProcess = spawn('python3', ['comfyui-api.py']);
+      // Emit uniqueId to all connected clients
+       console.log('emitting...')
+      io.emit('uniqueId', { uniqueId, message: 'Unique ID generated successfully.' });
+
+      // Respond to the client
+      res.status(200).json({ message: 'Unique ID is being processed.' });
+    });
+  } else {
+    res.status(400).json({ message: 'Prompt is required.' });
+  }
+});
+
+//Run Comfyui api script
+app.get("/comfyui", (req, res) => {
+  const pythonScript = 'comfyui-api.py';
+
+  // Execute the Python script
+  const pythonProcess = spawn('python3', [pythonScript]);
+
+  // On process close, send a response back
   pythonProcess.on('close', (code) => {
     if (code === 0) {
       res.status(200).json({ message: 'Python script executed successfully!' });
@@ -162,21 +152,14 @@ app.get('/comfyui', (req, res) => {
       res.status(500).json({ message: `Python script exited with code ${code}` });
     }
   });
+
+  // Handle errors from spawning the process
   pythonProcess.on('error', (err) => {
-    console.error('Error starting Python script:', err.message);
-    res.status(500).json({ message: 'Failed to execute Python script.' });
+    res.status(500).json({ message: 'Failed to start Python script', error: err.message });
   });
 });
 
 // Start the server
 server.listen(3001, () => {
-  console.log(`Server is running on port 3001`);
+  console.log('Server is running on https://sloomoo.onrender.com');
 });
-
-// Helper function to parse file names
-function parseFileName(fileName) {
-  const match = fileName.match(/^(.+)_0*(\d+)_\.\w+$/);
-  if (!match) return null;
-  const [_, id, version] = match;
-  return { id, version: parseInt(version, 10) };
-}

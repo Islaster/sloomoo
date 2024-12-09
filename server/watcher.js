@@ -1,12 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const http = require('http');
-const expores = require('express');
 const { S3Client, ListObjectsV2Command, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { Readable } = require('stream');
 require('dotenv').config();
-
-con
 
 // Initialize S3 client
 const s3Client = new S3Client({
@@ -14,16 +10,6 @@ const s3Client = new S3Client({
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
-
-const { Server } = require('socket.io');
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server , {
-  cors: {
-    origin: 'https://sloomoo.vercel.app', // Frontend URL
-    methods: ['GET', 'POST'],
   },
 });
 
@@ -75,7 +61,7 @@ async function downloadFile(key) {
 }
 
 // Poll the bucket for new versions
-async function pollForNewFiles() {
+async function pollForNewFiles(io) {
   try {
     console.log('Checking for new files...');
     const command = new ListObjectsV2Command({ Bucket: BUCKET_NAME });
@@ -117,12 +103,7 @@ async function pollForNewFiles() {
   setTimeout(pollForNewFiles, 5000);
 }
 
-pollForNewFiles();
-
-io.on('connection', (socket) => {
-    console.log(`Frontend connected: ${socket.id}`);
-  });
-
-  server.listen(3002, () => {
-    console.log('Watcher running on port 3002');
-  });
+module.exports = {
+  pollForNewFiles,
+  downloadFile,
+};
