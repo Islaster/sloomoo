@@ -25,6 +25,7 @@ export default function Output({ setChangeScreen }) {
         const imageUrl = URL.createObjectURL(response.data);
         setOutputImg(imageUrl);
         setOutputPoem(`Sloomoo closed their eyes and wished for ${prompt}`)
+        console.log(outputPoem)
       }catch (error) {
         console.error('Error fetching image:', error);
         setOutputImg('/error-placeholder.png'); // Fallback in case of error
