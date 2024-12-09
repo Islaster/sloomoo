@@ -10,7 +10,7 @@ export default function Output({ setChangeScreen }) {
   const [outputImg, setOutputImg] = useState('test.png'); // Default image placeholder
   const [isLoading, setIsLoading] = useState(true);
 
-  const socket = io('http://localhost:3002');
+  const socket = io('https://sloomoo.onrender.com:3002');
 
   useEffect(() => {
 
@@ -18,7 +18,7 @@ export default function Output({ setChangeScreen }) {
       console.log('New image detected for ID:', id)
       try{
         console.log(localStorage.getItem('uniqueId'))
-        const url = `http://localhost:3001/comfyui/output/${localStorage.getItem('uniqueId')}`
+        const url = `https://sloomoo.onrender.com/comfyui/output/${localStorage.getItem('uniqueId')}`
         const response = await axios.get(url,{responseType: 'blob'})
         const imageUrl = URL.createObjectURL(response.data);
         setOutputImg(imageUrl);

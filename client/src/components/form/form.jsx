@@ -22,9 +22,9 @@ export default function SloomooForm({ setChangeScreen }) {
       "id": uniqueId
     }
 
-    axios.post('http://localhost:3001/', data).then((res)=>{
+    axios.post('https://sloomoo.onrender.com/', data).then((res)=>{
       if(res){ 
-        axios.get('http://localhost:3001/comfyui')
+        axios.get('https://sloomoo.onrender.com/comfyui')
       }
     });
 

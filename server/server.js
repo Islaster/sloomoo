@@ -13,27 +13,13 @@ const mongoose = require('mongoose')
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000', // Allow requests from your frontend
+    origin: 'https://sloomoo.vercel.app/', // Allow requests from your frontend
     methods: ['GET', 'POST'],
   },
 });
 
-// MongoDB connection
-const MONGO_URI = process.env.MONGODB_URI; // Update this with your MongoDB URI
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
-
-// Define a schema for storing filenames
-const imageSchema = new mongoose.Schema({
-    fileName: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
-});
-
-const Image = mongoose.model('Image', imageSchema);
-
 app.use(cors({
-  origin: 'http://localhost:3000', // Allow requests from your frontend
+  origin: 'https://sloomoo.vercel.app/', // Allow requests from your frontend
   credentials: true, // Allow credentials (cookies) to be sent
 }))
 
