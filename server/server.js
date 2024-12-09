@@ -5,8 +5,8 @@ const http = require('http');
 const { S3Client, ListObjectsV2Command, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { Readable } = require('stream');
 const { Server } = require('socket.io');
-const cors = require("cors");
-const {spawn} = require('child_process');
+const cors = require('cors');
+const { spawn } = require('child_process');
 require('dotenv').config();
 
 const app = express();
@@ -37,7 +37,7 @@ const s3Client = new S3Client({
   },
 });
 
-// Socket.io connection for both services
+// Socket.io connection
 io.on('connection', (socket) => {
   console.log(`Client connected: ${socket.id}`);
   socket.on('disconnect', () => {
@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Service 1: Serve images
+// Serve images
 app.get('/comfyui/output/:id', async (req, res) => {
   const { id } = req.params;
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'];
@@ -77,10 +77,10 @@ app.get('/comfyui/output/:id', async (req, res) => {
   }
 });
 
-// Service 2: Poll and download files from S3
+// Poll and download files from S3
 async function pollForNewFiles() {
   try {
-    console.log('Polling S3 for new files...');
+    console.log(`Polling S3 for new files at ${new Date().toISOString()}`);
     const command = new ListObjectsV2Command({ Bucket: BUCKET_NAME });
     const data = await s3Client.send(command);
 
@@ -97,24 +97,32 @@ async function pollForNewFiles() {
 
     for (const file of validFiles) {
       const parsed = parseFileName(path.basename(file.Key));
-      if (!parsed) continue;
+      if (!parsed) {
+        console.log(`Skipping invalid file name: ${file.Key}`);
+        continue;
+      }
 
       const { id, version } = parsed;
-      if (!latestVersions[id] || version > latestVersions[id]) {
-        latestVersions[id] = version;
-        console.log(`New version detected: ${file.Key}`);
-        await downloadFile(file.Key);
-        io.emit('newImage', { id, message: "File downloaded successfully." });
+      if (latestVersions[id] && version <= latestVersions[id]) {
+        console.log(`Skipping ${file.Key}: Already processed or older version.`);
+        continue;
       }
+
+      latestVersions[id] = version;
+      console.log(`New version detected: ${file.Key}`);
+      await downloadFile(file.Key);
+      io.emit('newImage', { id, message: "File downloaded successfully." });
     }
   } catch (error) {
-    console.error('Error polling S3:', error);
+    console.error('Error polling S3:', error.message);
   }
 
-  setTimeout(pollForNewFiles, 5000);
+  setTimeout(pollForNewFiles, 30000); // Poll every 30 seconds
 }
+
 pollForNewFiles();
 
+// Download a file from S3
 async function downloadFile(key) {
   const localPath = path.join(DOWNLOAD_DIR, path.basename(key));
   try {
@@ -129,16 +137,22 @@ async function downloadFile(key) {
     if (Body instanceof Readable) {
       Body.pipe(fileStream);
       return new Promise((resolve, reject) => {
-        fileStream.on('finish', () => resolve());
-        fileStream.on('error', reject);
+        fileStream.on('finish', () => {
+          console.log(`Downloaded: ${localPath}`);
+          resolve();
+        });
+        fileStream.on('error', (error) => {
+          console.error(`Error writing file ${key}:`, error.message);
+          reject(error);
+        });
       });
     }
   } catch (error) {
-    console.error(`Error downloading file ${key}:`, error);
+    console.error(`Error downloading file ${key}:`, error.message);
   }
 }
 
-// Run a Python script from Service 1
+// Run a Python script
 app.get('/comfyui', (req, res) => {
   const pythonProcess = spawn('python3', ['comfyui-api.py']);
   pythonProcess.on('close', (code) => {
@@ -148,15 +162,18 @@ app.get('/comfyui', (req, res) => {
       res.status(500).json({ message: `Python script exited with code ${code}` });
     }
   });
+  pythonProcess.on('error', (err) => {
+    console.error('Error starting Python script:', err.message);
+    res.status(500).json({ message: 'Failed to execute Python script.' });
+  });
 });
 
 // Start the server
-
 server.listen(3001, () => {
-  console.log(`Server is running on https://sloomoo.onrender.com`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
-// Helper functions
+// Helper function to parse file names
 function parseFileName(fileName) {
   const match = fileName.match(/^(.+)_0*(\d+)_\.\w+$/);
   if (!match) return null;
