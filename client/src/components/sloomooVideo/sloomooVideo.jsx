@@ -34,7 +34,6 @@ Sweet Sloomoo sits, all alone.`}, {videoSrc:'/videos/Sloomoovie_part3.mp4', poem
                                     width: '100%',
                                     height: '100%',
                                     position: 'relative',
-                                    objectFit: 'cover'
                                 }} />
                 </div>
                 <div className="sloomoo-holiday-wish-header">
