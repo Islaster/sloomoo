@@ -20,7 +20,7 @@ export default function Output({ setChangeScreen }) {
   useEffect(() => {
     
     socket.on('newImage', async ({ id }) => {
-      if (id.startsWith(uniqueId)) {
+      if (id === uniqueId) {
       console.log('New image detected for ID:', id)
       try{
         console.log(localStorage.getItem('uniqueId'))
