@@ -19,7 +19,6 @@ const io = new Server(server, {
 
 app.use(cors({
   origin: 'https://sloomoo.vercel.app/', // Allow requests from your frontend
-  credentials: true, // Allow credentials (cookies) to be sent
 }))
 
 const DOWNLOAD_DIR = path.resolve(__dirname, 'images');
