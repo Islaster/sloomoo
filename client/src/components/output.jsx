@@ -6,20 +6,25 @@ import axios from "axios";
 import { AppContext } from '../contexts/AppContext';
 
 export default function Output({ setChangeScreen }) {
-  const [uniqueId, setUniqueId] = useState(null); // Store the unique ID from the backend
-  const [outputPoem, setOutputPoem] = useState(''); // Store the poem content
+  const [latestImg, setLatestImg] = useState(null); // Store the unique ID from the backend
+  const [outputPoem, setOutputPoem] = useState('LOADING...'); // Store the poem content
   const [outputImg, setOutputImg] = useState('test.png'); // Default image placeholder
   const [isLoading, setIsLoading] = useState(true);
   const {prompt} = useContext(AppContext)
   
   const socket = io('https://sloomoo.onrender.com');
+
+  // Retrieve the uniqueId from localStorage
+   const uniqueId = localStorage.getItem('uniqueId');
   
   useEffect(() => {
     
     socket.on('newImage', async ({ id }) => {
+      if (filename.startsWith(uniqueId)) {
       console.log('New image detected for ID:', id)
       try{
         console.log(localStorage.getItem('uniqueId'))
+        
         const url = `https://sloomoo.onrender.com/comfyui/output/${localStorage.getItem('uniqueId')}`
         const response = await axios.get(url,{responseType: 'blob'})
         const imageUrl = URL.createObjectURL(response.data);
@@ -31,6 +36,9 @@ export default function Output({ setChangeScreen }) {
         setOutputImg('/error-placeholder.png'); // Fallback in case of error
       } finally {
         setIsLoading(false);
+      }
+      }else {
+        console.log(`Image does not match unique ID: ${uniqueId}`);
       }
     })
     return () => {

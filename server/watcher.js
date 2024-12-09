@@ -61,7 +61,7 @@ async function downloadFile(key) {
 }
 
 // Poll the bucket for new versions
-async function pollForNewFiles(io, userId) {
+async function pollForNewFiles(io) {
   try {
     console.log('Checking for new files...');
     const command = new ListObjectsV2Command({ Bucket: BUCKET_NAME });
@@ -90,14 +90,7 @@ async function pollForNewFiles(io, userId) {
         latestVersions[id] = version;
         console.log(`New version detected: ${file.Key}`);
         await downloadFile(file.Key);
-        console.log('uniqueId: ', userId)
-        if(userId != 1){
-          if(userId === id){
-            io.emit('newImage', { id, message: "file has been made" });
-          }
-        }
-      } else {
-        console.log(`Skipping ${file.Key}: Not a new version.`);
+        io.emit('newImage', { id, message: "file has been made" });
       }
     }
   } catch (error) {

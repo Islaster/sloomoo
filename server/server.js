@@ -29,7 +29,7 @@ const DOWNLOAD_DIR = path.resolve(__dirname, 'images');
 const BUCKET_NAME = 'aws-output-images';
 
 // Initialize shared `io` for all functions
-pollForNewFiles(io, user.id);
+pollForNewFiles(io);
 
 io.on('connection', (socket) => {
   console.log(`Client connected: ${socket.id}`);
