@@ -16,7 +16,7 @@ const s3Client = new S3Client({
 const { Server } = require('socket.io');
 const io = new Server(3002, {
   cors: {
-    origin: 'http://localhost:3000', // Frontend URL
+    origin: 'https://sloomoo.vercel.app', // Frontend URL
     methods: ['GET', 'POST'],
   },
 });
