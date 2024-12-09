@@ -4,16 +4,15 @@ export default function OpeningScreen({setChangeScreen}){
     return(
     <>
     <section className="vh-100 vw-100">
-                <div style={{ width: '100vw', height: '300px' }}>
+                <div style={{ width: '100vw', height: '25vh' }}>
                     <img src="/Drips_Master-03.png" alt="bigdrip"
                                 style={{
                                     width: '100%',
                                     height: '100%',
                                     position: 'relative',
-                                    objectFit: 'cover'
                                 }} />
                 </div>
-            <section className="align-items-center justify-content-center">
+            <section className="d-flex align-items-center justify-content-center" style={{ height: '55vh' }}>
                 <div className="text-center">
                     <div className='sloomoovies-presents pb-5' >
                         SLOOMOOVIES<br />

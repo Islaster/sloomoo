@@ -59,6 +59,7 @@
         width: 95vw;
         height: 70vh;
         min-height: 62vh;
+        max-width: 50rem;
         padding:.1rem;
         padding-top: 1rem;
         border-radius: 4rem;
@@ -75,22 +76,12 @@
         justify-content: space-between;
         overflow-y: auto;
     }
-    
-    .video-container {
-        width: calc(100% - 2rem);
-        height: calc(100vw - 4rem);
-        max-height: 33vh;
-        position: relative;
-        overflow: hidden;
-        background-color: black;
-        border-radius: 0.5rem;
-        margin: 1rem;
-    }
 
     .video-wrapper {
         width: calc(100vw - 3rem);
         height: calc(100vw - 4rem);
         max-height: 33vh;
+        max-width: 45rem;
         position: relative;
         overflow: hidden;
         background-color: black;
@@ -99,10 +90,11 @@
     }
 
 footer{
-    position:absolute;
-    left:0;
-    bottom:0;
-    right:0;
-    padding-bottom: 1rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
 }
 

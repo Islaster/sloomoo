@@ -4,7 +4,7 @@ export default function Credits({setChangeScreen}){
     return(
         <>
         <section className="vh-100 vw-100">
-            <div style={{ width: '100vw', height: '200px' }}>
+            <div style={{ width: '100vw', height: '25vh' }}>
                 <img src="/Drips_Master-03.png" alt="bigdrip"
                             style={{
                                 width: '120%',
