@@ -1,7 +1,7 @@
 {
   "main": "server.js",
   "scripts": {
-    "start": "node server.js && node watcher.js", 
+    "start": "node server.js && PORT=3002 node watcher.js", 
     "dev": "nodemon index.js"
   },
   "dependencies": {
