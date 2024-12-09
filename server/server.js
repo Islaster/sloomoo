@@ -151,8 +151,8 @@ app.get('/comfyui', (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
+
+server.listen(3001, () => {
   console.log(`Server is running on https://sloomoo.onrender.com`);
 });
 
