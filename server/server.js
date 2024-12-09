@@ -47,20 +47,17 @@ const latestServedImages = {};
 // Serve the latest image based on the given ID
 app.get('/comfyui/output/:id', async (req, res) => {
   const { id } = req.params; // Extract the ID from the route parameter
-  console.log('Received request for ID:', id);
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'];
 
   try {
     // Read all files in the directory
     const files = fs.readdirSync(DOWNLOAD_DIR);
-    console.log('Files in directory:', files);
 
     // Filter files by the given ID and valid image extensions
     const matchingFiles = files.filter((file) => {
       const { name, ext } = path.parse(file);
       return name.startsWith(id) && imageExtensions.includes(ext.toLowerCase());
     });
-    console.log('Matching files:', matchingFiles);
 
     if (matchingFiles.length === 0) {
       console.error('No matching files found for ID:', id);
@@ -70,7 +67,9 @@ app.get('/comfyui/output/:id', async (req, res) => {
     // Sort files to find the latest one (assuming naming convention includes versions or timestamps)
     const latestFile = matchingFiles.sort().reverse()[0]; // Sort descending and take the first file
     const imagePath = path.join(DOWNLOAD_DIR, latestFile);
-    console.log('Latest file to serve:', imagePath);
+    
+    console.log('Serving file:', imagePath);
+    console.log('ETag:', res.get('ETag'));
 
     // Check if this file is newer than the last served one
     if (latestServedImages[id] === latestFile) {
