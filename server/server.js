@@ -10,7 +10,7 @@ const cors = require("cors");
 const {spawn} = require('child_process');
 const { pollForNewFiles, downloadFile } = require('./watcher');
 const user = {id: 1}
-
+const crypto = require("crypto")
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -68,8 +68,10 @@ app.get('/comfyui/output/:id', async (req, res) => {
     const latestFile = matchingFiles.sort().reverse()[0]; // Sort descending and take the first file
     const imagePath = path.join(DOWNLOAD_DIR, latestFile);
     
-    console.log('Serving file:', imagePath);
-    console.log('ETag:', res.get('ETag'));
+    const hash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+
+    res.setHeader('ETag', hash);
+    res.setHeader('Cache-Control', 'public, max-age=3600');
 
     // Check if this file is newer than the last served one
     if (latestServedImages[id] === latestFile) {
@@ -78,6 +80,7 @@ app.get('/comfyui/output/:id', async (req, res) => {
 
     // Update the latest served record
     latestServedImages[id] = latestFile;
+    
 
     // Send the file to the client
     res.sendFile(imagePath, (err) => {
