@@ -90,6 +90,7 @@ async function pollForNewFiles(io, userId) {
         latestVersions[id] = version;
         console.log(`New version detected: ${file.Key}`);
         await downloadFile(file.Key);
+        console.log('uniqueId: ', userId)
         if(userId != 1){
           if(userId === id){
             io.emit('newImage', { id, message: "file has been made" });
