@@ -158,5 +158,5 @@ app.get("/comfyui", (req, res) => {
 
 // Start the server
 server.listen(3001, () => {
-  console.log('Server is running on http://localhost:3001');
+  console.log('Server is running on https://sloomoo.onrender.com');
 });
