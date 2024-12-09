@@ -57,6 +57,7 @@ Sweet Sloomoo sits, all alone.`}, {videoSrc:'/videos/Sloomoovie_part3.mp4', poem
                             autoPlay 
                             muted
                             loop
+                            playsInline
                             />
                         </div>
                         <Card.Body className="vc-body d-flex flex-column align-items-center justify-content-center">
