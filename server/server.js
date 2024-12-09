@@ -9,6 +9,7 @@ const app = express();
 const cors = require("cors");
 const {spawn} = require('child_process');
 const { pollForNewFiles, downloadFile } = require('./watcher');
+const user = {id: 1}
 
 
 const server = http.createServer(app);
@@ -28,7 +29,7 @@ const DOWNLOAD_DIR = path.resolve(__dirname, 'images');
 const BUCKET_NAME = 'aws-output-images';
 
 // Initialize shared `io` for all functions
-pollForNewFiles(io);
+pollForNewFiles(io, user.id);
 
 io.on('connection', (socket) => {
   console.log(`Client connected: ${socket.id}`);
@@ -90,6 +91,7 @@ app.get('/comfyui/output/:id', async (req, res) => {
 
 app.post('/', (req, res) => {
   const { prompt, uniqueId } = req.body;
+  user.id = uniqueId;
   if (prompt) {
     console.log('Received response:', req.body);
 
@@ -112,7 +114,7 @@ app.post('/', (req, res) => {
       console.log('Generated unique ID:', req.body.id);
 
       if (jsonData['6'] && jsonData['6'].inputs) {
-        jsonData['6'].inputs.text = prompt;
+        jsonData['6'].inputs.text = `Sloomoo_Holiday_Character and ${prompt}`;
       }
      if (jsonData['9'] && jsonData['9'].inputs) {
         jsonData['9'].inputs.filename_prefix = req.body.id
