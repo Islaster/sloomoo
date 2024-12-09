@@ -16,6 +16,60 @@
     margin-top: 1rem;
     margin-bottom: 1rem;
     }
+    .wish-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        max-width: 500px;
+        padding: 2rem;
+    }
+    
+    .wish-label {
+        font-size: 1.5rem;
+        font-family: 'Quicksand';
+        font-weight: bold;
+        color: #C9139B;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .wish-input {
+        width: 100%;
+        min-height: 100px;
+        padding: 1rem;
+        border: 2px solid #3154FF;
+        border-radius: 8px;
+        font-size: 1rem;
+        resize: none;
+    }
+    
+    .wish-input:focus {
+        outline: none;
+        border-color: #C9139B;
+        box-shadow: 0 0 10px rgba(49, 84, 255, 0.2);
+    }
+    
+    .wish-input::placeholder {
+        color: #999;
+    }
+    
+    .submit-button {
+        background-color: #3154FF;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    .submit-button:hover {
+        background-color: #C9139B;
+    }
+    
 
     .form-card {
         background-image: url('snowglobe.png');
@@ -23,7 +77,8 @@
         background-position: 50% 50%;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         width: 95vw;
-        height: 70vh;
+        height: 65vh;
+        max-width: 800px;
         padding: 2rem;
         border-radius: 4rem;
         display: flex;
