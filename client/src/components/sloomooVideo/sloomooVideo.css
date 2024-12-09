@@ -54,11 +54,12 @@
     
     
   .video-card {
-        background-color: #FFF5E6;;
+        background-color: #FFF5E6;
         box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
         width: 95vw;
         height: 70vh;
         min-height: 62vh;
+        max-width: 800px;
         padding:.1rem;
         padding-top: 1rem;
         border-radius: 4rem;
@@ -67,7 +68,7 @@
 
     .vc-body{
         width: 92vw;
-        height: 20vh;
+        height: 26vh;
         padding:1px;
         margin: 1px;
         margin-bottom: .5rem;
@@ -91,6 +92,7 @@
         width: calc(100vw - 3rem);
         height: calc(100vw - 4rem);
         max-height: 33vh;
+        max-width: 600px;
         position: relative;
         overflow: hidden;
         background-color: black;

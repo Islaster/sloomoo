@@ -10,6 +10,7 @@ export default function Output({ setChangeScreen }) {
   const [outputImg, setOutputImg] = useState('test.png'); // Default image placeholder
   const [isLoading, setIsLoading] = useState(true);
 
+
   const socket = io('http://localhost:3002');
 
   useEffect(() => {
@@ -106,5 +107,6 @@ export default function Output({ setChangeScreen }) {
         </div>
       </section>
     </>
+
   );
 }
