@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./form.css";
 import { v4 as uuidv4 } from "uuid";
 import "./form.css";
 import axios from "axios";
+import { AppContext } from "../../contexts/AppContext";
+
 
 export default function SloomooForm({ setChangeScreen }) {
-  const [prompt, setPrompt] = useState("");
+  const {prompt, setPrompt} = useContext(AppContext);
+
+  
   useEffect(() => {
     const uniqueId = localStorage.getItem('uniqueId');
 

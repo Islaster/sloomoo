@@ -1,18 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Card from 'react-bootstrap/Card';
 import io from 'socket.io-client';
 import "./output.css";
 import axios from "axios";
+import { AppContext } from '../contexts/AppContext';
 
 export default function Output({ setChangeScreen }) {
   const [uniqueId, setUniqueId] = useState(null); // Store the unique ID from the backend
   const [outputPoem, setOutputPoem] = useState(''); // Store the poem content
   const [outputImg, setOutputImg] = useState('test.png'); // Default image placeholder
   const [isLoading, setIsLoading] = useState(true);
-
+  
   const socket = io('https://sloomoo.onrender.com');
-
+  
   useEffect(() => {
+    const {propmt} = useContext(AppContext)
 
     socket.on('newImage', async ({ id }) => {
       console.log('New image detected for ID:', id)
@@ -22,6 +24,7 @@ export default function Output({ setChangeScreen }) {
         const response = await axios.get(url,{responseType: 'blob'})
         const imageUrl = URL.createObjectURL(response.data);
         setOutputImg(imageUrl);
+        setOutputPoem(`Sloomoo closed their eyes and wished for ${prompt}`)
       }catch (error) {
         console.error('Error fetching image:', error);
         setOutputImg('/error-placeholder.png'); // Fallback in case of error
