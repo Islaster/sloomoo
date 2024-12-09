@@ -68,6 +68,7 @@ app.get('/comfyui/output/:id', async (req, res) => {
     const latestFile = matchingFiles.sort().reverse()[0]; // Sort descending and take the first file
     const imagePath = path.join(DOWNLOAD_DIR, latestFile);
     
+    const fileBuffer = fs.readFileSync(imagePath);
     const hash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
 
     res.setHeader('ETag', hash);
