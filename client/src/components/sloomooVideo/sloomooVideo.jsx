@@ -71,7 +71,7 @@ Sweet Sloomoo sits, all alone.`}, {videoSrc:'/videos/Sloomoovie_part3.mp4', poem
                             {buttonRender}
                 </div>
          </section>
-         <div>
+        {/* <div>
                     <footer className="mt-2">
                         <a 
                             className="credit d-flex flex-column align-items-center justify-content-center" 
@@ -81,7 +81,7 @@ Sweet Sloomoo sits, all alone.`}, {videoSrc:'/videos/Sloomoovie_part3.mp4', poem
                             credits
                         </a>
                     </footer>
-        </div>
+                        </div> */}
         </section>
 
      </>
