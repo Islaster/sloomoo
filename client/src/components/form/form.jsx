@@ -82,7 +82,7 @@ export default function SloomooForm({ setChangeScreen }) {
           </form>
         </div>
       </section>
-
+  {/*
       <footer className="mt-2">
       <a 
           className="credit d-flex flex-column align-items-center justify-content-center"
@@ -92,6 +92,7 @@ export default function SloomooForm({ setChangeScreen }) {
           credits
         </a>
       </footer>
+          */}
     </section>
   );
 }

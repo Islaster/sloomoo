@@ -105,6 +105,7 @@ export default function Output({ setChangeScreen }) {
             <button onClick={() => setChangeScreen(3)}>MAKE A NEW WISH</button>
           </div>
         </section>
+        {/*
         <div>
           <footer className="mt-2">
             <a
@@ -115,7 +116,7 @@ export default function Output({ setChangeScreen }) {
               credits
             </a>
           </footer>
-        </div>
+        </div> */}
       </section>
     </>
   );
