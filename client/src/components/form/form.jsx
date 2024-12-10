@@ -4,11 +4,13 @@ import { v4 as uuidv4 } from "uuid";
 import "./form.css";
 import axios from "axios";
 import { AppContext } from "../../contexts/AppContext";
+import {Filter} from 'bad-words'
 
 
 export default function SloomooForm({ setChangeScreen }) {
   const {prompt, setPrompt} = useContext(AppContext);
-
+  const filter = new Filter();
+  const [error, setError] = useState("");
   
   useEffect(() => {
     const uniqueId = localStorage.getItem('uniqueId');
@@ -20,7 +22,14 @@ export default function SloomooForm({ setChangeScreen }) {
     }    
   }, []);
   const handleSubmit = (e) => {
+    e.preventDefault()
     const uniqueId = localStorage.getItem('uniqueId');
+    console.log(filter.isProfane(prompt))
+    if (filter.isProfane(prompt)) {
+      setError("Sloomoo's wish only works when we spread love and joy! Would you like to make another special wish?");
+      return;
+    }
+
     const data = {
       'prompt': prompt,
       "id": uniqueId
@@ -39,8 +48,8 @@ export default function SloomooForm({ setChangeScreen }) {
 
   const handleChange =(e)=> {
     setPrompt(e.target.value);
+    setError("");
   }
-
   return (
     <section className="vh-100 vw-100">
       <div className="header-container">
@@ -76,6 +85,7 @@ export default function SloomooForm({ setChangeScreen }) {
               onChange={handleChange}
               required
             />
+            {error && <p className="error-message">{error}</p>} 
             <button type="submit" className="submit-button">
               SHAKE!!!
             </button>

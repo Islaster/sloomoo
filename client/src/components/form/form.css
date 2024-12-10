@@ -16,6 +16,17 @@
     margin-top: 1rem;
     margin-bottom: 1rem;
     }
+
+    .wish-label {
+        font-size: 0.8rem;
+        font-family: 'Quicksand';
+        font-weight: bold;
+        color: #C9139B;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
+
     .wish-form {
         display: flex;
         flex-direction: column;
@@ -94,6 +105,16 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 20px 0px rgba(0, 0, 0, 0.15);
     }
+
+    .error-message {
+        font-size: 0.8rem;
+        font-family: 'Quicksand';
+        font-weight: bold;
+        color: #C9139B;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
     
 
 footer{
