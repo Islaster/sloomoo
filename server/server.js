@@ -17,6 +17,7 @@ const io = new Server(server, {
   cors: {
     origin: 'https://sloomoo.vercel.app', // Allow requests from your frontend
     methods: ['GET', 'POST'],
+    transports: ['polling', 'websocket'],
   },
 });
 
