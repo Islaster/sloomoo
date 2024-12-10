@@ -131,7 +131,7 @@ app.post('/', (req, res) => {
      if (jsonData['9'] && jsonData['9'].inputs) {
         jsonData['9'].inputs.filename_prefix = req.body.id
       }
-
+      console.log('prompt being sent: ', jsonData['6'].inputs.text)
       // Write changes to the file
       fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (writeErr) => {
         if (writeErr) {
