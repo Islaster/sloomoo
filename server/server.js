@@ -51,8 +51,10 @@ app.get('/comfyui/output/:id', async (req, res) => {
 
   try {
     // Read all files in the directory
+    console.log('Reading files from directory...');
     const files = fs.readdirSync(DOWNLOAD_DIR);
-
+    
+    console.log('Filtering files...');
     // Filter files by the given ID and valid image extensions
     const matchingFiles = files.filter((file) => {
       const { name, ext } = path.parse(file);
@@ -63,11 +65,12 @@ app.get('/comfyui/output/:id', async (req, res) => {
       console.error('No matching files found for ID:', id);
       return res.status(404).json({ message: 'No matching images found.' });
     }
-
+    console.log('Sorting files to find the latest one...');
     // Sort files to find the latest one (assuming naming convention includes versions or timestamps)
     const latestFile = matchingFiles.sort().reverse()[0]; // Sort descending and take the first file
     const imagePath = path.join(DOWNLOAD_DIR, latestFile);
     
+    console.log('Generating hash...');
     const fileBuffer = fs.readFileSync(imagePath);
     const hash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
 
