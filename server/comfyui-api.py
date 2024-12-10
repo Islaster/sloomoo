@@ -13,6 +13,6 @@ def queue_prompt(prompt):
 with open("workflow_api.json", "r") as file:
     prompt = json.load(file)
 
-
+print('connecting to comfyui...')
 # Queue the prompt
 queue_prompt(prompt)
