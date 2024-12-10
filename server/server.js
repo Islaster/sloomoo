@@ -81,8 +81,9 @@ app.get('/comfyui/output/:id', async (req, res) => {
 
     // Update the latest served record
     latestServedImages[id] = latestFile;
+    console.log("last served image: ",latestServedImages[id])
     
-    console.log("image being sent: ", imagePath)
+    console.log('serving image: ', imagePath)
     // Send the file to the client
     res.sendFile(imagePath, (err) => {
       if (err) {
