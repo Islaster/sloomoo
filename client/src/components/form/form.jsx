@@ -8,13 +8,13 @@ import {Filter} from 'bad-words'
 
 
 export default function SloomooForm({ setChangeScreen }) {
-  const {prompt, setPrompt} = useContext(AppContext);
+  const {prompt, setPrompt, poem, setPoem} = useContext(AppContext);
   const filter = new Filter();
   const [error, setError] = useState("");
-  
+  const baseURL = process.env.REACT_APP_SERVER_URL || "http://localhost:3001";
+
   useEffect(() => {
     const uniqueId = localStorage.getItem('uniqueId');
-
     if (!uniqueId) {
       localStorage.setItem('uniqueId', uuidv4());
     }else{
@@ -24,9 +24,9 @@ export default function SloomooForm({ setChangeScreen }) {
   const handleSubmit = (e) => {
     e.preventDefault()
     const uniqueId = localStorage.getItem('uniqueId');
-    console.log(filter.isProfane(prompt))
     if (filter.isProfane(prompt)) {
       setError("Sloomoo's wish only works when we spread love and joy! Would you like to make another special wish?");
+      setPrompt("");
       return;
     }
 
@@ -34,10 +34,11 @@ export default function SloomooForm({ setChangeScreen }) {
       'prompt': prompt,
       "id": uniqueId
     }
-    console.log(data);
-    axios.post('https://sloomoo.onrender.com', data).then((res)=>{
+ 
+    axios.post(baseURL, data).then((res)=>{
       if(res){ 
-        axios.get('https://sloomoo.onrender.com/comfyui')
+        setPoem(res.data.poem);
+        axios.get(`${baseURL}/comfyui`)
       }
     });
 

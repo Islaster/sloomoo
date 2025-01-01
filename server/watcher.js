@@ -2,7 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const { S3Client, ListObjectsV2Command, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { Readable } = require('stream');
-require('dotenv').config();
+const envFile = `.env.${process.env.NODE_ENV || 'dev'}`;
+if (fs.existsSync(envFile)) {
+  require('dotenv').config({ path: path.resolve(process.cwd(), envFile) });
+  console.log(`Loaded environment from ${envFile}`);
+}else {
+  // fallback if you like
+  dotenv.config();
+  console.warn(`No ${envFile} file found; using .env if available`);
+}
 
 // Initialize S3 client
 const s3Client = new S3Client({

@@ -1,30 +1,47 @@
 const fs = require('fs');
 const path = require('path');
+const envFile = `.env.${process.env.NODE_ENV || 'dev'}`;
+if (fs.existsSync(envFile)) {
+  require('dotenv').config({ path: path.resolve(process.cwd(), envFile) });
+  console.log(`Loaded environment from ${envFile}`);
+}else {
+  // fallback if you like
+  dotenv.config();
+  console.warn(`No ${envFile} file found; using .env if available`);
+}
+
+const axios = require('axios');
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');  
-require('dotenv').config();
-const { Configuration, OpenAIApi } = require('openai');
-const app = express();
-const cors = require("cors");
-const {spawn} = require('child_process');
+const cors = require('cors');
+const { spawn } = require('child_process');
+const crypto = require('crypto');
+const bodyParser = require("body-parser");
 const { pollForNewFiles, downloadFile } = require('./watcher');
-const user = {id: 1}
-const crypto = require("crypto")
 
+const app = express();
 const server = http.createServer(app);
+
+// Dynamically pick the allowed CORS origin from the environment
+const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:3000';
+const allowedOrigins = [
+  "http://localhost:3000",      // Dev
+  "https://sloomoo.vercel.app"  // Prod
+];
+console.log('allowedOrigin: ', allowedOrigin);
 const io = new Server(server, {
   cors: {
-    origin: 'https://sloomoo.vercel.app', // Allow requests from your frontend
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
     transports: ['polling', 'websocket'],
   },
 });
 
-
 app.use(cors({
-  origin: 'https://sloomoo.vercel.app', // Allow requests from your frontend
-}))
+  origin: allowedOrigins,
+}));
+app.use(bodyParser.json());
 
 const DOWNLOAD_DIR = path.resolve(__dirname, 'images');
 const BUCKET_NAME = 'aws-output-images';
@@ -40,13 +57,14 @@ io.on('connection', (socket) => {
   });
 });
 
-app.use(express.json()); // Middleware to parse JSON request bodies
-
 // In-memory tracker for the latest served file for each ID
 const latestServedImages = {};
 
+
+//GET ROUTES
 // Serve the latest image based on the given ID
-app.get('/comfyui/output/:id', async (req, res) => {
+app.get('/comfyui/output/:id', (req, res) => {
+  console.log('watcher route hit.');
   const { id } = req.params; // Extract the ID from the route parameter
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'];
 
@@ -67,8 +85,8 @@ app.get('/comfyui/output/:id', async (req, res) => {
       return res.status(404).json({ message: 'No matching images found.' });
     }
     console.log('Sorting files to find the latest one...');
-    // Sort files to find the latest one (assuming naming convention includes versions or timestamps)
-    const latestFile = matchingFiles.sort().reverse()[0]; // Sort descending and take the first file
+    // Sort files to find the latest one
+    const latestFile = matchingFiles.sort().reverse()[0]; 
     const imagePath = path.join(DOWNLOAD_DIR, latestFile);
     
     console.log('Generating hash...');
@@ -85,9 +103,9 @@ app.get('/comfyui/output/:id', async (req, res) => {
 
     // Update the latest served record
     latestServedImages[id] = latestFile;
-    console.log("last served image: ",latestServedImages[id])
+    console.log("last served image: ", latestServedImages[id]);
     
-    console.log('serving image: ', imagePath)
+    console.log('serving image: ', imagePath);
     // Send the file to the client
     res.sendFile(imagePath, (err) => {
       if (err) {
@@ -101,59 +119,7 @@ app.get('/comfyui/output/:id', async (req, res) => {
   }
 });
 
-app.post('/', (req, res) => {
-  const { prompt, uniqueId } = req.body;
-  user.id = uniqueId;
-  if (prompt) {
-    console.log('Received response:', req.body);
-
-    const filePath = './workflow_api.json';
-
-    fs.readFile(filePath, 'utf8', (err, data) => {
-      if (err) {
-        console.error('Error reading JSON file:', err);
-        return res.status(500).json({ message: 'Failed to process request' });
-      }
-
-      let jsonData;
-      try {
-        jsonData = JSON.parse(data);
-      } catch (parseErr) {
-        console.error('Error parsing JSON:', parseErr);
-        return res.status(500).json({ message: 'Failed to process request' });
-      }
-
-      console.log('Generated unique ID:', req.body.id);
-
-      if (jsonData['6'] && jsonData['6'].inputs) {
-        jsonData['6'].inputs.text = `Sloomoo_Holiday_Character and ${prompt}`;
-      }
-     if (jsonData['9'] && jsonData['9'].inputs) {
-        jsonData['9'].inputs.filename_prefix = req.body.id
-      }
-      console.log('prompt being sent: ', jsonData['6'].inputs.text)
-      // Write changes to the file
-      fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (writeErr) => {
-        if (writeErr) {
-          console.error('Error writing to JSON file:', writeErr);
-        } else {
-          console.log('JSON file updated successfully');
-        }
-      });
-
-      // Emit uniqueId to all connected clients
-       console.log('emitting...')
-      io.emit('uniqueId', { uniqueId, message: 'Unique ID generated successfully.' });
-
-      // Respond to the client
-      res.status(200).json({ message: 'Unique ID is being processed.' });
-    });
-  } else {
-    res.status(400).json({ message: 'Prompt is required.' });
-  }
-});
-
-//Run Comfyui api script
+// Run Comfyui api script
 app.get("/comfyui", (req, res) => {
   const pythonScript = 'comfyui-api.py';
 
@@ -175,7 +141,97 @@ app.get("/comfyui", (req, res) => {
   });
 });
 
-// Start the server
-server.listen(3001, () => {
-  console.log('Server is running on https://sloomoo.onrender.com');
+//POST ROUTES
+//update comfyui json
+app.post('/', async (req, res) => {
+  const { prompt, uniqueId } = req.body;
+  if (!prompt) {
+    return res.status(400).json({ message: 'Prompt is required.' });
+  }
+
+  console.log('Received response:', req.body);
+
+  const filePath = './workflow_api.json';
+
+  fs.readFile(filePath, 'utf8', async (err, data) => {
+    if (err) {
+      console.error('Error reading JSON file:', err);
+      return res.status(500).json({ message: 'Failed to process request' });
+    }
+
+    let jsonData;
+    try {
+      jsonData = JSON.parse(data);
+    } catch (parseErr) {
+      console.error('Error parsing JSON:', parseErr);
+      return res.status(500).json({ message: 'Failed to process request' });
+    }
+
+    console.log('Generated unique ID:', req.body.id);
+
+    try{
+      console.log('requesting from chatgpt...')
+      // 1) Construct the JSON payload (mirroring your curl -d)
+    const payload = {
+      model: "gpt-4o",
+      messages: [{ role: "user", content: `make a poem and a flux friendly prompt it needs the trigger word "Sloomoo_Holiday_Character". make both the prompt and the poem in the nature of sloomoo institute. Put it into a json object(ex. {poem: ex poem, flux-prompt: ex prompt}): ${prompt}` }],
+      temperature: 0.7,
+    };
+    console.log(process.env.CHATGPT_API_KEY);
+    
+    // 2) Call the OpenAI API via Axios
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer"+ " "+process.env.CHATGPT_API_KEY
+        }
+      }
+    );
+    // 3) Forward OpenAI's response data to the client
+    const jsonString = response.data.choices[0].message.content
+    .replace(/^```json/, '')
+    .replace(/```$/, '')
+    .replace(/'/g, '')
+    .trim();
+    // Step 2: Parse the JSON
+  
+    const jsonObject = JSON.parse(jsonString);
+    
+    // Modify JSON data
+    if (jsonData['6'] && jsonData['6'].inputs) {
+      jsonData['6'].inputs.text = jsonObject['flux-prompt'];
+    }
+    if (jsonData['9'] && jsonData['9'].inputs) {
+      jsonData['9'].inputs.filename_prefix = req.body.id;
+    }
+    
+    console.log('prompt being sent: ', jsonData['6'].inputs.text);
+    res.status(200).json({ poem: jsonObject.poem });
+    }catch(err){
+      console.log(err);
+    }
+
+    fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (writeErr) => {
+      if (writeErr) {
+        console.error('Error writing to JSON file:', writeErr);
+      } else {
+        console.log('JSON file updated successfully');
+      }
+    });
+
+    // Emit uniqueId to all connected clients
+    console.log('emitting...');
+    io.emit('uniqueId', { uniqueId, message: 'Unique ID generated successfully.' });
+  });
+});
+
+
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+  console.log(
+    `Server is running on ${process.env.SERVER_URL || 'http://localhost:' + PORT}`
+  );
 });

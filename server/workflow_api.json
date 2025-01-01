@@ -1,8 +1,8 @@
 {
   "5": {
     "inputs": {
-      "width": 1168,
-      "height": 864,
+      "width": 512,
+      "height": 512,
       "batch_size": 1
     },
     "class_type": "EmptyLatentImage",
@@ -12,7 +12,7 @@
   },
   "6": {
     "inputs": {
-      "text": "eating",
+      "text": "Create a whimsical world inspired by the Sloomoo Institute, where your character, the Sloomoo_Holiday_Character, embarks on a magical adventure in a land of slime and sensory delight.",
       "clip": [
         "35",
         1
@@ -74,7 +74,7 @@
   },
   "12": {
     "inputs": {
-      "unet_name": "flux1-dev-23gb.safetensors",
+      "unet_name": "flux1-dev-fp8.safetensors",
       "weight_dtype": "default"
     },
     "class_type": "UNETLoader",
@@ -152,7 +152,7 @@
   },
   "25": {
     "inputs": {
-      "noise_seed": 945635543889012
+      "noise_seed": 585134974329407
     },
     "class_type": "RandomNoise",
     "_meta": {

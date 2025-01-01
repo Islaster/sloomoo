@@ -7,7 +7,7 @@ import Output from "./output"
 
 export default function TextPrompt(){
 
-  const [changeScreen, setChangeScreen] = useState(1);
+  const [changeScreen, setChangeScreen] = useState(3);
   const renderOpeningScreen = changeScreen === 1 ? <OpeningScreen  setChangeScreen={setChangeScreen}/> : "";
   const renderCredits = changeScreen === 'c' ? <Credits setChangeScreen={setChangeScreen} /> : "";
   const renderSloomooVideo = changeScreen === 2 ? <SloomooVideo setChangeScreen={setChangeScreen}/>: "";

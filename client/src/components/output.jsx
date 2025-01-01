@@ -10,13 +10,15 @@ export default function Output({ setChangeScreen }) {
   const [outputPoem, setOutputPoem] = useState('LOADING...'); // Store the poem content
   const [outputImg, setOutputImg] = useState('test.png'); // Default image placeholder
   const [isLoading, setIsLoading] = useState(true);
-  const {prompt} = useContext(AppContext)
+  const {poem} = useContext(AppContext)
+  const baseURL = process.env.REACT_APP_SERVER_URL || "http://localhost:3001";
   
-  const socket = io('https://sloomoo.onrender.com');
+  const socket = io(baseURL);
 
   // Retrieve the uniqueId from localStorage
    const uniqueId = localStorage.getItem('uniqueId');
-  
+   const url = `${baseURL}/comfyui/output/${localStorage.getItem('uniqueId')}`
+   console.log(url)
   useEffect(() => {
     
     socket.on('newImage', async ({ id }) => {
@@ -24,12 +26,12 @@ export default function Output({ setChangeScreen }) {
       console.log('New image detected for ID:', id)
       try{
         console.log(localStorage.getItem('uniqueId'))
-        
-        const url = `https://sloomoo.onrender.com/comfyui/output/${localStorage.getItem('uniqueId')}`
+        const url = `${baseURL}/comfyui/output/${localStorage.getItem('uniqueId')}`
+        console.log(url)
         const response = await axios.get(url,{responseType: 'blob'})
         const imageUrl = URL.createObjectURL(response.data);
         setOutputImg(imageUrl);
-        setOutputPoem(`Sloomoo closed their eyes and wished for ${prompt}`)
+        setOutputPoem(poem)
         console.log(outputPoem)
       }catch (error) {
         console.error('Error fetching image:', error);
