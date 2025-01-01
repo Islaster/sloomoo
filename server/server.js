@@ -6,7 +6,7 @@ if (fs.existsSync(envFile)) {
   console.log(`Loaded environment from ${envFile}`);
 }else {
   // fallback if you like
-  dotenv.config();
+  require('dotenv').config();
   console.warn(`No ${envFile} file found; using .env if available`);
 }
 
