@@ -1,53 +1,53 @@
-import { useState, useEffect, useContext } from 'react';
-import Card from 'react-bootstrap/Card';
-import io from 'socket.io-client';
+import { useState, useEffect, useContext } from "react";
+import Card from "react-bootstrap/Card";
+import io from "socket.io-client";
 import "./output.css";
 import axios from "axios";
-import { AppContext } from '../contexts/AppContext';
+import { AppContext } from "../contexts/AppContext";
 
 export default function Output({ setChangeScreen }) {
-  const [latestImg, setLatestImg] = useState(null); // Store the unique ID from the backend
-  const [outputPoem, setOutputPoem] = useState('LOADING...'); // Store the poem content
-  const [outputImg, setOutputImg] = useState('test.png'); // Default image placeholder
+  //const [latestImg, setLatestImg] = useState(null); // Store the unique ID from the backend
+  const [outputPoem, setOutputPoem] = useState("LOADING..."); // Store the poem content
+  const [outputImg, setOutputImg] = useState("test.png"); // Default image placeholder
   const [isLoading, setIsLoading] = useState(true);
-  const {poem} = useContext(AppContext)
+  const { poem } = useContext(AppContext);
   const baseURL = process.env.REACT_APP_SERVER_URL || "http://localhost:3001";
-  
+
   const socket = io(baseURL);
 
   // Retrieve the uniqueId from localStorage
-   const uniqueId = localStorage.getItem('uniqueId');
-   const url = `${baseURL}/comfyui/output/${localStorage.getItem('uniqueId')}`
-   console.log(url)
+  const uniqueId = localStorage.getItem("uniqueId");
+  const url = `${baseURL}/comfyui/output/${uniqueId}`;
+  console.log(url);
   useEffect(() => {
-    
-    socket.on('newImage', async ({ id }) => {
+    socket.on("newImage", async ({ id }) => {
       if (id === uniqueId) {
-      console.log('New image detected for ID:', id)
-      try{
-        console.log(localStorage.getItem('uniqueId'))
-        const url = `${baseURL}/comfyui/output/${localStorage.getItem('uniqueId')}`
-        console.log(url)
-        const response = await axios.get(url,{responseType: 'blob'})
-        const imageUrl = URL.createObjectURL(response.data);
-        setOutputImg(imageUrl);
-        setOutputPoem(poem)
-        console.log(outputPoem)
-      }catch (error) {
-        console.error('Error fetching image:', error);
-        setOutputImg('/error-placeholder.png'); // Fallback in case of error
-      } finally {
-        setIsLoading(false);
-      }
-      }else {
+        console.log("New image detected for ID:", id);
+        try {
+          console.log(localStorage.getItem("uniqueId"));
+          const url = `${baseURL}/comfyui/output/${localStorage.getItem(
+            "uniqueId"
+          )}`;
+          console.log(url);
+          const response = await axios.get(url, { responseType: "blob" });
+          const imageUrl = URL.createObjectURL(response.data);
+          setOutputImg(imageUrl);
+          setOutputPoem(poem);
+          console.log(outputPoem);
+        } catch (error) {
+          console.error("Error fetching image:", error);
+          setOutputImg("/error-placeholder.png"); // Fallback in case of error
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
         console.log(`Image does not match unique ID: ${uniqueId}`);
       }
-    })
+    });
     return () => {
-      socket.off('newImage');
+      socket.off("newImage");
     };
   }, []);
-  
 
   return (
     <>
@@ -72,35 +72,34 @@ export default function Output({ setChangeScreen }) {
         <section className="d-flex flex-column align-items-center justify-content-center p-2">
           <Card className="output-card d-flex flex-column align-items-center justify-content-center ">
             <div className="image-wrapper">
-              {isLoading?
-              <video
-              src='/videos/loadingVideo.mp4'
-              autoPlay
-              loop
-              muted
-              style={{
-                width: "100%",
-                height: "100%",
-                position: "relative",
-                objectFit: "cover",
-              }}
-              />
-              :<img
-              src={outputImg}
-              alt="sloomoovie"
-              style={{
-                width: "100%",
-                height: "100%",
-                position: "relative",
-                objectFit: "cover",
-              }}
-              />
-            }
+              {isLoading ? (
+                <video
+                  src="/videos/loadingVideo.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    position: "relative",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <img
+                  src={outputImg}
+                  alt="sloomoovie"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    position: "relative",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
             </div>
             <Card.Body className="oc-body d-flex flex-column align-items-center justify-content-center">
-              <div className="poem">
-                {outputPoem}
-              </div>
+              <div className="poem">{outputPoem}</div>
             </Card.Body>
           </Card>
           <div className="d-flex flex-column align-items-center justify-content-center mt-4">
