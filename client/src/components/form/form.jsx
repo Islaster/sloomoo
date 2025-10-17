@@ -7,22 +7,17 @@ import { AppContext } from "../../contexts/AppContext";
 import { Filter } from "bad-words";
 
 export default function SloomooForm({ setChangeScreen }) {
-  const { prompt, setPrompt, setPoem } = useContext(AppContext);
+  const { prompt, setPrompt, setPoem, setUniqueId, uniqueId } =
+    useContext(AppContext);
   const filter = new Filter();
   const [error, setError] = useState("");
   const baseURL = process.env.REACT_APP_SERVER_URL || "http://localhost:3001";
 
   useEffect(() => {
-    const uniqueId = localStorage.getItem("uniqueId");
-    if (!uniqueId) {
-      localStorage.setItem("uniqueId", uuidv4());
-    } else {
-      console.log("uniqueId found: ", uniqueId);
-    }
+    setUniqueId(uuidv4());
   }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
-    const uniqueId = localStorage.getItem("uniqueId");
     if (filter.isProfane(prompt)) {
       setError(
         "Sloomoo's wish only works when we spread love and joy! Would you like to make another special wish?"

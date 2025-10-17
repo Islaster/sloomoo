@@ -33,39 +33,43 @@ Make sure you have the following installed:
 
 1. Navigate to the `server` directory
 2. Install the required dependencies:
-    ```bash
-    npm install
-    ```
-3. Create an .env file in the server directory with the following variables: 
-    ```bash
-    #Node enviornment 
-    NODE_ENV=dev
+   ```bash
+   npm install
+   ```
+3. Create an .env file in the server directory with the following variables:
 
-    # Server port
-    PORT=3001
+   ```bash
+   #Node enviornment
+   NODE_ENV=dev
 
-    # Local URLs
-    FRONTEND_URL=http://localhost:3000
-    SERVER_URL=http://localhost:3001
+   # Server port
+   PORT=3001
 
-    #APIS
-    CHATGPT_API_KEY='your api key goes here'
+   # Local URLs
+   FRONTEND_URL=http://localhost:3000
+   SERVER_URL=http://localhost:3001
 
-    #AWS
-    AWS_ACCESS_KEY='your access key goes here'
-    AWS_REGION='your region goes here'
-    AWS_SECRET_ACCESS_KEY='Your secret key goes here'
-    ```
+   #APIS
+   CHATGPT_API_KEY='your api key goes here'
+
+   #AWS
+   AWS_ACCESS_KEY='your access key goes here'
+   AWS_REGION='your region goes here'
+   AWS_SECRET_ACCESS_KEY='Your secret key goes here'
+   ```
+
 4. Start the server:
-    to run dev server
-    ```bash
-    npm run dev
-    ```
-    to run production server
-    ```bash
-    npm start
-    ```
+   to run dev server
+   ```bash
+   npm run dev
+   ```
+   to run production server
+   ```bash
+   npm start
+   ```
+
 ## Dependencies
+
 - **Express**: Handles API requests.
 - **Socket.IO**: Manages real-time client-server communication.
 - **AWS SDK**: Interfaces with AWS S3.

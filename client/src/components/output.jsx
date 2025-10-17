@@ -1,39 +1,24 @@
 import { useState, useEffect, useContext } from "react";
 import Card from "react-bootstrap/Card";
-import io from "socket.io-client";
 import "./output.css";
 import axios from "axios";
 import { AppContext } from "../contexts/AppContext";
 
 export default function Output({ setChangeScreen }) {
-  //const [latestImg, setLatestImg] = useState(null); // Store the unique ID from the backend
   const [outputPoem, setOutputPoem] = useState("LOADING..."); // Store the poem content
   const [outputImg, setOutputImg] = useState("test.png"); // Default image placeholder
   const [isLoading, setIsLoading] = useState(true);
-  const { poem } = useContext(AppContext);
-  const baseURL = process.env.REACT_APP_SERVER_URL || "http://localhost:3001";
+  const { poem, socket, uniqueId } = useContext(AppContext);
 
-  const socket = io(baseURL);
-
-  // Retrieve the uniqueId from localStorage
-  const uniqueId = localStorage.getItem("uniqueId");
-  const url = `${baseURL}/comfyui/output/${uniqueId}`;
-  console.log(url);
-  useEffect(() => {
+  /* useEffect(() => {
     socket.on("newImage", async ({ id }) => {
       if (id === uniqueId) {
         console.log("New image detected for ID:", id);
         try {
-          console.log(localStorage.getItem("uniqueId"));
-          const url = `${baseURL}/comfyui/output/${localStorage.getItem(
-            "uniqueId"
-          )}`;
-          console.log(url);
           const response = await axios.get(url, { responseType: "blob" });
           const imageUrl = URL.createObjectURL(response.data);
           setOutputImg(imageUrl);
           setOutputPoem(poem);
-          console.log(outputPoem);
         } catch (error) {
           console.error("Error fetching image:", error);
           setOutputImg("/error-placeholder.png"); // Fallback in case of error
@@ -47,8 +32,13 @@ export default function Output({ setChangeScreen }) {
     return () => {
       socket.off("newImage");
     };
-  }, []);
-
+  }, []);*/
+  socket.on("image_file", ({ url }) => {
+    setOutputPoem(poem);
+    setOutputImg(url);
+    console.log(url);
+    setIsLoading(false);
+  });
   return (
     <>
       <section className="vh-100 vw-100">

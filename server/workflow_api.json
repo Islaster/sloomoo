@@ -12,6 +12,7 @@
   },
   "6": {
     "inputs": {
+      "text": "A vibrant Christmas slime wonderland with glowing magenta ornaments, cyan dripping icicles, and shimmering yellow lights, playful holiday magic, Sloomoo_Holiday_character.",
       "clip": [
         "35",
         1
@@ -40,7 +41,7 @@
   },
   "9": {
     "inputs": {
-      "filename_prefix": "b13e0f72-cacd-4370-858e-17f83af98662",
+      "filename_prefix": "d9933f99-993c-47eb-abd9-738358697d69",
       "images": [
         "8",
         0
@@ -53,7 +54,7 @@
   },
   "10": {
     "inputs": {
-      "vae_name": "flux_ae.safetensors"
+      "vae_name": "flux_vae.safetensors"
     },
     "class_type": "VAELoader",
     "_meta": {
@@ -64,7 +65,8 @@
     "inputs": {
       "clip_name1": "t5xxl_fp16.safetensors",
       "clip_name2": "clip_l.safetensors",
-      "type": "flux"
+      "type": "flux",
+      "device": "default"
     },
     "class_type": "DualCLIPLoader",
     "_meta": {
@@ -151,7 +153,7 @@
   },
   "25": {
     "inputs": {
-      "noise_seed": 585134974329407
+      "noise_seed": 519890794470412
     },
     "class_type": "RandomNoise",
     "_meta": {
@@ -188,7 +190,7 @@
   },
   "35": {
     "inputs": {
-      "lora_name": "fdcc54fe755a40f0a44ab673a034e266_pytorch_lora_weights.safetensors",
+      "lora_name": "6ad10d487f61439999ba12fc2c821c4e_pytorch_lora_weights.safetensors",
       "strength_model": 1.1500000000000001,
       "strength_clip": 1,
       "model": [
