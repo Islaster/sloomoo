@@ -24,14 +24,8 @@ function startComfyBridge() {
       let msg;
       try {
         msg = JSON.parse(buf.toString("utf8"));
-
-        if (msg.type !== "crystools.monitor") {
-          if (msg.data?.client_id === id) {
-            console.log("This event belongs to my prompt:", msg.type);
-          }
-          console.log(msg);
-        }
-      } catch {
+      } catch (e) {
+        console.log(e);
         return;
       }
       const type = msg.type?.toLowerCase?.();
@@ -39,7 +33,6 @@ function startComfyBridge() {
 
       if (type === "status") {
         emitter.emit("status", data);
-        //handleStatus(data);
       } else if (type === "execution_success")
         emitter.emit("execution_success", data);
     });

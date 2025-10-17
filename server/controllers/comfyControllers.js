@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
 const { emitter } = require("../websockets/ws");
-const crypto = require("crypto");
 const { getIO } = require("../websockets/io");
 const { v4 } = require("uuid");
 
