@@ -8,35 +8,11 @@ export default function Output({ setChangeScreen }) {
   const [outputPoem, setOutputPoem] = useState("LOADING..."); // Store the poem content
   const [outputImg, setOutputImg] = useState("test.png"); // Default image placeholder
   const [isLoading, setIsLoading] = useState(true);
-  const { poem, socket, uniqueId } = useContext(AppContext);
+  const { poem, socket } = useContext(AppContext);
 
-  /* useEffect(() => {
-    socket.on("newImage", async ({ id }) => {
-      if (id === uniqueId) {
-        console.log("New image detected for ID:", id);
-        try {
-          const response = await axios.get(url, { responseType: "blob" });
-          const imageUrl = URL.createObjectURL(response.data);
-          setOutputImg(imageUrl);
-          setOutputPoem(poem);
-        } catch (error) {
-          console.error("Error fetching image:", error);
-          setOutputImg("/error-placeholder.png"); // Fallback in case of error
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        console.log(`Image does not match unique ID: ${uniqueId}`);
-      }
-    });
-    return () => {
-      socket.off("newImage");
-    };
-  }, []);*/
   socket.on("image_file", ({ url }) => {
     setOutputPoem(poem);
     setOutputImg(url);
-    console.log(url);
     setIsLoading(false);
   });
   return (

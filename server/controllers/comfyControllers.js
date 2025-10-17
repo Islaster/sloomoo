@@ -57,13 +57,6 @@ async function returnLatestImageById() {
 
     const imagePath = path.join(process.env.DOWNLOAD_DIR, latestFile[0]);
 
-    //send fingerprint of file to the browser
-    //purpose: so the browser doesent re-download data it already has
-    //use case: for dynamic data that's meant for the browser
-    console.log("Generating hash...");
-    const fileBuffer = fs.readFileSync(imagePath);
-    const hash = crypto.createHash("sha256").update(fileBuffer).digest("hex");
-
     // Check if this file is newer than the last served one
     if (latestServedImages[id] === latestFile) {
       return res.status(304).json({ message: "No new images available." });
