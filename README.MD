@@ -7,9 +7,9 @@ Built for a holiday party, it invites users to **journey through a festive narra
 
 ---
 
-## Live Demo
+## Live Demo Video
 
-[Try Sloomoo Here](https://sloomoo.vercel.app)
+[Sloomoo Demo video](https://www.loom.com/share/ac62cf0ffdf046788b6f31b5f73dbd43)
 
 ---
 
@@ -63,11 +63,35 @@ This creates a magical, festive storytelling experience that’s both **personal
 
 **AI & Cloud**
 
-- OpenAI GPT for poems + flux prompts
+- DeepSeek GPT for poems + flux prompts
 - ComfyUI for image generation
 - AWS S3 for output storage
 
 ---
+
+## Architecture (High Level)
+
+- React client submits a wish to the Express API
+- Server triggers ComfyUI workflow and streams progress via Socket.IO
+- Outputs are uploaded to S3 and returned to the client as URLs
+- Poem is generated via the DeepSeek LLM API and delivered in real time
+
+## Prerequisites
+
+- Node.js
+- ComfyUI
+- Python 3.x (for ComfyUI)
+
+## Model Files (Hugging Face)
+
+Sloomoo uses ComfyUI for image generation. To run it locally, you need to download the required model files (UNet, text encoders, VAE, and optional LoRA).
+They are hosted on Hugging Face so you can download them in your browser.
+
+### Download (Browser / GUI)
+
+1. Open the Hugging Face repo (model assets): [link here](https://huggingface.co/thelunos/sloomoo_comfyui_assets)
+2. Read the model card for the exact folder paths for each file type(vae, text_encoders, loras, diffusion_models)
+3. Click the Files tab and download the required assets.
 
 ## Quick Start
 
@@ -94,10 +118,25 @@ npm install
 npm run dev
 ```
 
-### 4. Visit in Browser
+### 4. Run ComfyUI
+
+In your root Comfy directory
+
+```bash
+source venv/bin/activate #macOS/Linux
+python main.py
+```
+
+### 5. Visit in Browser
 
 Open http://localhost:3000
 to start your journey
+
+## Troubleshooting
+
+- If generation never starts, confirm ComfyUI is running and the server’s ComfyUI endpoint/path matches your setup.
+- If images don’t appear, verify AWS credentials + bucket permissions and that AWS_REGION is correct.
+- If the client can’t connect, check REACT_APP_SERVER_URL and CORS/FRONTEND_URL.
 
 ## Environment Variables
 
@@ -110,7 +149,7 @@ REACT_APP_SERVER_URL=http://localhost:3001
 ### Server (server/.env)
 
 ```bash
-DEEPSEEK_API_KEY=your_openai_api_key
+DEEPSEEK_API_KEY=your_deepseek_api_key
 FRONTEND_URL=http://localhost:3000
 SERVER_URL=http://localhost:3001
 AWS_REGION=your_region
