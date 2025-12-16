@@ -1,0 +1,127 @@
+.header-container {
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: top center;
+    text-align: center;
+    margin-bottom: .5rem;
+}
+
+.sloomoo-holiday-wish-header{
+    font-size: 1.5rem;
+    line-height: 100%;
+    font-family:'Leckerli One';
+    color: #fff6f6;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    }
+
+    .wish-label {
+        font-size: 0.8rem;
+        font-family: 'Quicksand';
+        font-weight: bold;
+        color: #C9139B;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
+
+    .wish-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        max-width: 500px;
+        padding: 2rem;
+    }
+    
+    .wish-label {
+        font-size: 1.5rem;
+        font-family: 'Quicksand';
+        font-weight: bold;
+        color: #C9139B;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .wish-input {
+        width: 100%;
+        min-height: 100px;
+        padding: 1rem;
+        border: 2px solid #3154FF;
+        border-radius: 8px;
+        font-size: 1rem;
+        resize: none;
+    }
+    
+    .wish-input:focus {
+        outline: none;
+        border-color: #C9139B;
+        box-shadow: 0 0 10px rgba(49, 84, 255, 0.2);
+    }
+    
+    .wish-input::placeholder {
+        color: #999;
+    }
+    
+    .submit-button {
+        background-color: #3154FF;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    .submit-button:hover {
+        background-color: #C9139B;
+    }
+    
+
+    .form-card {
+        background-image: url('snowglobe.png');
+        background-size:  auto 100%;
+        background-position: 50% 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 95vw;
+        height: 65vh;
+        max-width: 800px;
+        padding: 2rem;
+        border-radius: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .embed-iframe {
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .embed-iframe:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px 0px rgba(0, 0, 0, 0.15);
+    }
+
+    .error-message {
+        font-size: 0.8rem;
+        font-family: 'Quicksand';
+        font-weight: bold;
+        color: #C9139B;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    
+
+footer{
+    position:absolute;
+    left:0;
+    bottom:0;
+    right:0;
+    padding-bottom: 1rem;
+}
+

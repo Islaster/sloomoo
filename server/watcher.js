@@ -1,0 +1,127 @@
+const fs = require("fs");
+const path = require("path");
+const {
+  S3Client,
+  ListObjectsV2Command,
+  GetObjectCommand,
+} = require("@aws-sdk/client-s3");
+const { Readable } = require("stream");
+const envFile = `.env.${process.env.NODE_ENV || "dev"}`;
+if (fs.existsSync(envFile)) {
+  require("dotenv").config({ path: path.resolve(process.cwd(), envFile) });
+  console.log(`Loaded environment from ${envFile}`);
+} else {
+  // fallback if you like
+  require("dotenv").config();
+  console.warn(`No ${envFile} file found; using .env if available`);
+}
+
+// Initialize S3 client
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+
+const DOWNLOAD_DIR = path.resolve(__dirname, "images");
+const latestVersions = {}; // In-memory tracker for the latest version of each file prefix
+
+// Extract static portion and version from the file name
+function parseFileName(fileName) {
+  const match = fileName.match(/^(.+)_0*(\d+)_\.\w+$/);
+  if (!match) return null;
+  const [_, id, version] = match;
+  return { id, version: parseInt(version, 10) };
+}
+
+// Download a file from S3
+async function downloadFile(key) {
+  const localPath = path.join(DOWNLOAD_DIR, path.basename(key));
+
+  try {
+    if (!fs.existsSync(DOWNLOAD_DIR)) {
+      fs.mkdirSync(DOWNLOAD_DIR, { recursive: true });
+      console.log(`Created missing directory: ${DOWNLOAD_DIR}`);
+    }
+    const params = {
+      Bucket: process.env.BUCKET_NAME,
+      Key: key,
+    };
+
+    const command = new GetObjectCommand(params);
+    const { Body } = await s3Client.send(command);
+
+    const fileStream = fs.createWriteStream(localPath);
+    if (Body instanceof Readable) {
+      Body.pipe(fileStream);
+      return new Promise((resolve, reject) => {
+        fileStream.on("finish", () => {
+          //console.log(`Downloaded: ${localPath}`);
+          resolve();
+        });
+        fileStream.on("error", reject);
+      });
+    } else {
+      throw new Error("Unexpected body stream type.");
+    }
+  } catch (error) {
+    console.error(`Error downloading file ${key}:`, error);
+  }
+}
+
+// Poll the bucket for new versions
+async function pollForNewS3Files(io) {
+  try {
+    //console.log("Checking for new files...");
+    const command = new ListObjectsV2Command({
+      Bucket: process.env.BUCKET_NAME,
+    });
+    const data = await s3Client.send(command);
+
+    if (!data.Contents || data.Contents.length === 0) {
+      console.log("No files found in the bucket.");
+      return;
+    }
+
+    const imageExtensions = [
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".gif",
+      ".bmp",
+      ".tiff",
+      ".webp",
+    ];
+    const validFiles = data.Contents.filter((fileObject) => {
+      const extension = path.extname(fileObject.Key).toLowerCase();
+      return imageExtensions.includes(extension);
+    });
+
+    for (const file of validFiles) {
+      const parsed = parseFileName(path.basename(file.Key));
+      if (!parsed) continue;
+
+      const { id, version } = parsed;
+
+      // Check if the version is new
+      if (!latestVersions[id] || version > latestVersions[id]) {
+        // Update the tracker and download the file
+        latestVersions[id] = version;
+        //console.log(`New version detected: ${file.Key}`);
+        await downloadFile(file.Key);
+        io.emit("newImage", { id, message: "file has been made" });
+      }
+    }
+  } catch (error) {
+    console.error("Error polling for new files:", error);
+  }
+
+  setTimeout(() => pollForNewS3Files(io), 5000);
+}
+
+module.exports = {
+  pollForNewS3Files,
+  downloadFile,
+};

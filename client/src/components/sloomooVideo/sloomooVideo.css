@@ -1,0 +1,100 @@
+.header-container {
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: top center;
+    text-align: center;
+    margin-bottom: .5rem;
+}
+
+.sloomoo-holiday-wish-header{
+    font-size: 1.5rem;
+    line-height: 100%;
+    font-family:'Leckerli One';
+    color: #fff6f6;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    }
+
+.poem{
+    font-size: 0.8rem;
+    line-height: 150%;
+    color: #000;
+    font-family: 'Quicksand';
+    padding: 0 1rem 0.75rem 1rem;
+    white-space: pre-wrap;
+    margin: 0;
+    padding: 0.1rem;
+    text-align: center;
+    background: transparent;
+    border: none;
+    overflow-wrap: break-word;
+    
+    }
+
+    .white-space-pre-line {
+        white-space: pre-line;
+    }
+    .main-container {
+        min-height: 100vh;
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        background: linear-gradient(to bottom, #16A9E4, #3154FF, #C9139B);
+    }
+    
+    .title {
+        color: white;
+        font-family: 'Quicksand', sans-serif;
+    }
+    
+    
+  .video-card {
+        background-color: #FFF5E6;;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+        width: 95vw;
+        height: 70vh;
+        min-height: 62vh;
+        max-width: 50rem;
+        padding:.1rem;
+        padding-top: 1rem;
+        border-radius: 4rem;
+        
+    }
+
+    .vc-body{
+        width: 92vw;
+        height: 20vh;
+        padding:1px;
+        margin: 1px;
+        margin-bottom: .5rem;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow-y: auto;
+    }
+
+    .video-wrapper {
+        width: calc(100vw - 3rem);
+        height: calc(100vw - 4rem);
+        max-height: 33vh;
+        max-width: 45rem;
+        position: relative;
+        overflow: hidden;
+        background-color: black;
+        border-radius: 0.5rem;
+        margin: 1rem;
+    }
+
+footer{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+}
+
